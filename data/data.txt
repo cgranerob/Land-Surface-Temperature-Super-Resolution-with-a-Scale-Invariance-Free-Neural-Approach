@@ -1,0 +1,7 @@
+data is created automatically by running: 
+
+- python download_modis_images.py --start_date 2017-01-01 --stop_date 2020-01-01 
+(should remove some product for example if you dont want the rgb)
+- python process_modis.py 
+
+Then run data_preparation.py to train/val split.
