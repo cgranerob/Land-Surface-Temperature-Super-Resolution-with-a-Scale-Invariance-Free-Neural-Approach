@@ -58,7 +58,7 @@ python train_model_B.py --params ./paramsB.json
 ## Flow chart
 
 <p align="center">
-  <img src="./images/Flow_Chart.pdf" />
+  <img src="./images/flow_chart222.pdf" />
 </p>
 
 ## Results 
