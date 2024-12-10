@@ -20,37 +20,32 @@ The prefix line inside environment.yml should be modified to create the environm
 
 ## Project description
 ### Folders
-- **data** : Folder containing the MODIS data used to train the downscaling model (.hdf, .gtiff, .csv).
+- **data** : Folder containing the MODIS images used to train the super resolution NN models (.hdf, .gtiff, .csv).
 - **figures_test_dataset**: Folder containing all the figures obtained for the test dataset taken on Western-Center Europe
-- **models**: Directory containing the key informations about the trained CNNs: Weights, State_dict, training and testing curves.
+- **models**: Directory containing the trained CNNs and key information: Weights, State_dict, training and testing curves.
 - **predictions**: Folder only interesting if the model is used to predict on MODIS data directly. Works with predict.py.
-- **test_dataX**: Directories associated to test dataset X containing ASTER and MODIS data.
-- **test_dataX_formatted**: Directories containing the formatted test dataset. 
+- **test_data_formatted**: Directory containing the test dataset with coupled ASTER and MODIS concomitant images. 
 
 ### Scripts and codes
 
-- **download_modis_images.py**: Script using pymodis in order to download all the .hdf files associated to the tile h18v04 during a specified time period for the products MOD11A1.061 (LST GSW), MOD21A1D.061 (LST TES), MOD09GQ.061 (NIR, Red), MOD09GA.061 (RGB) (and MOD44W (Water Mask) but not used, can be interesting for some visualizations).   
+- **download_modis_images.py**: Script using pymodis in order to download all the .hdf files associated to the tile h18v04 during a specified time period for the products MOD11A1.061 (LST GSW), MOD21A1D.061 (LST TES), MOD09GQ.061 (NIR, Red) and MOD09GA.061 (RGB). It is also possible to download the product MOD44W (Water Mask) but it is not used in this work.   
 ```
 python download_modis_images.py --username your_username --password your_password --start_date 2023-08-01 --stop_date 2023-08-08 --n_threads 8
 ```
-- **process_modis.py**: Script to run after download_modis_images.py. This script processes the .hdf files from MOD11A1.061 to get LST patches of size 64x64 not containing sea or cloud pixels (or a small ratio). This files are saved under the GeoTiff format. The corresponding 256x256 NDVI patches are then computed from MOD09CQ.061's .hdf files and also saved in a similar fashion. Finally, two day/night .csv file are generated containing the pairs of LST/NDVI patches.  
+- **process_modis.py**: Script to run after download_modis_images.py. This script processes the .hdf files from MOD11A1.061 to get LST patches of size 64x64 not containing sea or cloud pixels (or containing a small ratio of cloud/sea pixels). These files are saved under the GeoTiff format. The corresponding 256x256 NDVI patches are then sliced from MOD09CQ.061's .hdf files and also saved in the same way. Finally, two .csv files (one for day and another for night acquisitions) are generated containing the pairs of LST/NDVI patches.  
 ``` 
 python process_modis.py
 ```
-- **data_preparation.py**: File preparing the two .csv files resulting from process_modis.py. The .csv files resulting from process_modis.py are manipulated and transformed into two new .csv files ModisDatasetA.csv and ModisDatasetB.csv which will then be used in dataset.py. The statistics of the LST and the NDVI are also computed and stored.
-- **train_model_B.py**: Training of the modelB. It is trained to predict the Super Resolved picture of the LST image based on the bilinear upsampled LST and the associated NDVI. This script is declined into two scripts: train_modelB_predef_filters (training of SIF-NN-SR1) and train_model_B_gradFTM (training of SIF-NN-SR2).
+- **data_preparation.py**: File preparing the two .csv files resulting from process_modis.py. The .csv files resulting from process_modis.py are manipulated and transformed into two new .csv files ModisDatasetA.csv and ModisDatasetB.csv which will then be used in dataset.py. Some statistics of the LST and the NDVI are also computed and stored.
+- **train_model_B.py**: Training of the modelB. It is trained to produce super resolution images of the LST taking as inputs the bilinear upsampled LST and the associated NDVI. This script is declined into two scripts: train_modelB_predef_filters (training of SIF-NN-SR1) and train_model_B_gradFTM (training of SIF-NN-SR2).
 ``` 
 python train_model_B.py --params ./paramsB.json
 ``` 
-- **create_test_dataset.py**: Creation of the Test dataset based on the ASTER LST data. For this script to run, you need a folder containing ASTER data of the same area/time period on both hdf and gtiff format. The script will download and associate the corresponding MODIS data.
-- **compare_lst_aster.py**: Observing the differences between the MODIS LST and ASTER at the 1km resolution.
-- **model_performance_aster..py**: Script assessing the performances of the downscaling approaches over the non_formatted test dataset. Stores the predictions inside the non formatted test_dataset at ./test_dataset/intermediary_files/output/model.
-- **format_test_dataset.py**: Script formatting the test dataset into a more simple one mainly being (ASTER 250m UTM, MODIS patch (dict) in MODIS sinusoidal projection). 
-- **model_perf_aster_formatds.py**: Same goal as model_performance_aster.py but with the formatted test dataset. 
+- **model_perf_aster_formatds.py**: Script assessing the performances of the super resolution algorithms over the test dataset. It stores the super resolution products and evaluation metrics at ./test_data_formatted/results/.
 - **compare_methods.py**: Script to make some observations, plots, measuring the fourier space similarity metrics, etc...
-- **example.ipynb**: Small working example code for the reprojection, georeferencing and the evaluation of the performance of a downscaling approach for a single pair of file present in the formatted test dataset. 
+- **Evaluation_of_MODIS_SuperResolution_LST.ipynb**: Small working example code for the reprojection, georeferencing and the evaluation of the performance of a downscaling approach for a single pair of MODIS and ASTER observations present in the formatted test dataset. 
 - **dataset.py**: Definition of the classes containing the two pytorch datasets. These datasets are based directly on the two .csv files coming from data_preparation.py.
-- **model.py**: Definition of the pytorch models to train. This file contains the definition of all the sub-blocks of the ModelA and B.
+- **model.py**: Definition of the pytorch models to train. This file contains the definition of all the sub-blocks of the ModelB.
 - **utils.py**: File regrouping the definition of multiple functions used throughout the entire project.
 - **lpips.py**: Source code obtained from https://github.com/photosynthesis-team/piq. 
 - **data_mining_sharpener.py**: Refactored code (in a single source file) from Guzinski and Nieto's PyDMS implementation: https://github.com/radosuav/pyDMS.
@@ -67,4 +62,4 @@ python train_model_B.py --params ./paramsB.json
 </p>
 
 ## Results 
-See pub
+See Evaluation_of_MODIS_SuperResolution_LST.ipynb
