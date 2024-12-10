@@ -48,7 +48,7 @@ import utils as us
 
 pd.set_option("display.precision", 2)
 #%% The top paths are probably irrelevant with the formatted test dataset
-path_formatted_dataset = './test_data2_formatted'
+path_formatted_dataset = './test_data_formatted'
 path_formatted_data = os.path.join(path_formatted_dataset, "data")
 path_formatted_results = os.path.join(path_formatted_dataset, "results")
 path_formatted_temporary = os.path.join(path_formatted_dataset, 'tmp')
