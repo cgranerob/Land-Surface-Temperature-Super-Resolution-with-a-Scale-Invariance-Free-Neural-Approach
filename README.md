@@ -65,7 +65,7 @@ python train_model_B.py --params ./paramsB.json
 See Evaluation_of_MODIS_SuperResolution_LST.ipynb
 
 ## References
-R. Ait-Bachir, C. Granero-Belinchon, A. Michel, J. Michel, X. Briottet and L. Drumetz **Land Surface Temperature Super-Resolution with a Scale-Invariance-Free Neural Approach: Application to MODIS** Preprint hal-04925380, 2025. <a href="https://doi.org/10.3390/rs11101251" > https://doi.org/10.3390/rs11101251 </a>
+R. Ait-Bachir, C. Granero-Belinchon, A. Michel, J. Michel, X. Briottet and L. Drumetz, **Land Surface Temperature Super-Resolution with a Scale-Invariance-Free Neural Approach: Application to MODIS**, Preprint hal-04925380, 2025. <a href="https://hal.science/hal-04925380" > https://hal.science/hal-04925380 </a>
 
 ## Contact
 
